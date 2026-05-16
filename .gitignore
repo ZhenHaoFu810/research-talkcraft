@@ -1,0 +1,5 @@
+# Development archives — not part of the distributed Skill package
+docs/
+
+# Claude Code local settings
+.claude/
