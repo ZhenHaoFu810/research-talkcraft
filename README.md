@@ -46,7 +46,7 @@ Each run produces a standardized pack with eight sections:
 ## Installation
 
 ```bash
-npx skills add <your-github-username>/research-talkcraft
+npx skills add ZhenHaoFu810/research-talkcraft
 ```
 
 Or install manually by copying `research-talkcraft/` into your agent's skills directory:
