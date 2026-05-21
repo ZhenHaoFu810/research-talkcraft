@@ -1,45 +1,41 @@
 # Research Talkcraft
 
-A script-first rehearsal Skill for research presentations. It reads existing slides and supporting materials, then produces a structured Presentation Rehearsal Pack containing a grounded script, critique, revision, Q&A preparation, and timing guidance.
+A Skill for rehearsing research presentations. It reads your slides and supporting materials, then produces a spoken script, critique, revised version, likely Q&A, and timing guidance.
 
-Research Talkcraft does not generate, rewrite, or redesign slides. It optimizes the spoken narrative around fixed presentation materials.
-
----
-
-## Overview
-
-Research presentations often suffer from a gap between finished materials and effective oral delivery. Slide decks may be polished, but the spoken narrative remains uncalibrated for audience, time constraints, and likely challenges. Research Talkcraft closes this gap by transforming existing materials into a rehearsal-ready output pack.
-
-The Skill operates in two modes:
-
-- **`slides-only`**: For self-contained decks where slide text is sufficient for script generation.
-- **`slides+context`**: For sparse decks where additional materials (paper drafts, abstracts, notes, reviewer comments) provide necessary grounding. This mode also enables contradiction detection between slides and supporting materials.
+It does not generate, rewrite, or redesign slides. It works with the materials you already have.
 
 ---
 
-## Core Capabilities
+## What It Does
 
-- **Slide-by-slide script generation**: Produces spoken narrative that explains slide content rather than reading bullets verbatim.
-- **Audience-aware critique**: Evaluates scripts against three personas — Confused Listener, Domain Expert, and Skeptical Reviewer — using a stable rubric (groundedness, clarity, audience fit, timing).
-- **Revised script generation**: Produces an improved script incorporating critique feedback.
-- **Likely Q&A preparation**: Anticipates audience questions and provides structured answer guidance.
-- **Timing control**: Estimates per-section delivery time, flags overrun risks, and identifies cut-for-time candidates. Includes a deterministic helper script (`scripts/estimate_timing.py`) with configurable WPM profiles and complexity modifiers.
-- **Contradiction detection**: Identifies factual inconsistencies between slide content and supporting materials.
+Research Talkcraft turns existing presentation materials into a rehearsal-ready output pack. You provide your slides, optionally with a paper draft, abstract, or notes; it returns a complete **Presentation Rehearsal Pack** that you can use to prepare for a talk.
 
----
+The Skill runs in two modes:
 
-## Output: Presentation Rehearsal Pack
+- **`slides-only`** — for self-contained decks where slide text is sufficient.
+- **`slides+context`** — for sparse decks where additional materials (paper drafts, abstracts, notes, reviewer comments) provide stronger grounding. This mode also checks for contradictions between slides and supporting materials.
 
-Each run produces a standardized pack with eight sections:
+### Core Capabilities
 
-1. **Presentation Brief** — Talk purpose, audience profile, core narrative arc, communication risks, recommended tone, operating mode, and uncertainty flags.
-2. **Slide-by-Slide Script** — Spoken narrative per slide with transition cues and approximate timing.
-3. **Confusion and Challenge Points** — Structured list of likely audience friction points with mitigation strategies.
-4. **Critique Summary** — Scored evaluation across groundedness, clarity, audience fit, and timing dimensions.
-5. **Revised Script** — Improved version incorporating critique recommendations.
-6. **Likely Q&A** — Anticipated questions with strong answer guidance.
-7. **Time-Control Guidance** — Per-section timing, overrun risks, and compression strategies.
-8. **Rehearsal Checklist** — Verifiable items to confirm before delivery.
+- **Script writing** — generates a slide-by-slide spoken narrative that explains rather than reads bullets.
+- **Critique** — evaluates the script against three personas: Confused Listener, Domain Expert, and Skeptical Reviewer.
+- **Revision** — rewrites the script based on the critique feedback.
+- **Q&A preparation** — anticipates likely questions and drafts answer guidance.
+- **Timing** — estimates per-section duration, flags overrun risks, and suggests compression targets. Includes a deterministic helper script (`scripts/estimate_timing.py`) with configurable WPM profiles.
+- **Contradiction detection** — spots factual inconsistencies between slide content and supporting materials.
+
+### The Rehearsal Pack
+
+The output has eight sections:
+
+1. **Brief** — audience profile, narrative arc, communication risks, tone guidance.
+2. **Script** — spoken narrative per slide, with transition cues and approximate timing.
+3. **Friction Points** — likely audience confusion spots and how to handle them.
+4. **Critique Summary** — scored evaluation across groundedness, clarity, audience fit, and timing.
+5. **Revised Script** — improved version incorporating the critique.
+6. **Likely Q&A** — anticipated questions with strong answer guidance.
+7. **Timing** — per-section duration, overrun risks, and compression strategies.
+8. **Checklist** — items to verify before presenting.
 
 ---
 
@@ -63,23 +59,25 @@ cp -r research-talkcraft .claude/skills/
 
 ---
 
-## Usage Examples
+## Usage
+
+The Skill triggers when you mention rehearsing, scripting, or critiquing a research presentation. Examples:
 
 - "I have a 20-minute seminar deck. Help me rehearse."
 - "Critique this talk script for a mixed CS/economics audience."
 - "My slides are sparse — I have a paper draft too. Build a rehearsal pack."
-- "I'm defending next week. Prepare likely Q&A and timing traps."
-- "Turn these bullet points into spoken Chinese for a lab meeting."
+- "I'm defending next week. Prep me for likely Q&A and timing traps."
+- "Turn these bullets into spoken Chinese for a lab meeting."
 
 ---
 
 ## Design Principles
 
-- **Script-first, not slide-first**: The Skill optimizes spoken narrative around fixed materials. It does not generate, rewrite, or redesign slides.
-- **User-visible mode selection**: The `slides-only` and `slides+context` modes are always surfaced to the user, not chosen silently by the agent.
-- **Single-agent default**: The core workflow is deterministic and single-agent. Multi-agent rehearsal is an optional extension, not the default.
-- **Grounded generation**: All script claims must trace back to provided materials. The Skill flags rather than invents when content is insufficient.
-- **Time-bounded realism**: Scripts are calibrated to actual delivery duration, with explicit guidance for compression under pressure.
+- **Script-first, not slide-first.** Optimize the spoken narrative around fixed materials. Do not redesign slides.
+- **Modes are user-visible.** `slides-only` and `slides+context` are always surfaced to the user, never chosen silently by the agent.
+- **Single-agent by default.** The core workflow is deterministic and single-agent. Multi-agent rehearsal is an optional add-on.
+- **Grounded, not invented.** Every claim traces back to the provided materials. When content is thin, the Skill flags it rather than filling gaps.
+- **Time-bounded.** A 35-minute script for a 20-minute slot is a failed script. Compression guidance is built in.
 
 ---
 
@@ -87,67 +85,53 @@ cp -r research-talkcraft .claude/skills/
 
 ### Core
 
-| File | Purpose |
-|------|---------|
-| `SKILL.md` | Main workflow definition. Defines operating modes (`slides-only` / `slides+context`), the 7-step core workflow, input handling rules, and guardrails. |
-| `references/script-output-template.md` | Template for the 8-section Presentation Rehearsal Pack. Specifies required content for each section. |
+- **`SKILL.md`** — Main workflow definition: operating modes, the 7-step core workflow, input handling rules, and guardrails.
+- **`references/script-output-template.md`** — Template for the 8-section Presentation Rehearsal Pack.
 
 ### Playbooks & Personas
 
-| File | Purpose |
-|------|---------|
-| `references/scenario-playbooks.md` | Calibrations for common presentation settings (seminar, conference, lab meeting, defense, mixed-background update). |
-| `references/audience-personas.md` | Three audience archetypes (Confused Listener, Domain Expert, Skeptical Reviewer) used during critique and Q&A generation. |
-| `references/qna-playbook.md` | Categories of common research presentation questions with guidance on what strong answers contain. |
+- **`references/scenario-playbooks.md`** — Calibrations for common presentation settings (seminar, conference, lab meeting, defense, mixed-background update).
+- **`references/audience-personas.md`** — Three archetypes used during critique and Q&A: Confused Listener, Domain Expert, Skeptical Reviewer.
+- **`references/qna-playbook.md`** — Common question categories and what strong answers look like.
 
 ### Critique & Revision
 
-| File | Purpose |
-|------|---------|
-| `references/critique-rubric.md` | Eight-dimension scoring rubric for evaluating draft scripts (groundedness, clarity, audience fit, timing, etc.). |
-| `references/revision-patterns.md` | Catalog of common weak-script → strong-script transformations with before/after guidance. |
+- **`references/critique-rubric.md`** — Eight-dimension scoring rubric (groundedness, clarity, audience fit, timing, etc.).
+- **`references/revision-patterns.md`** — Weak-script to strong-script transformations with before/after guidance.
 
 ### Exemplars
 
-| File | Purpose |
-|------|---------|
-| `references/exemplars.md` | Index pointing to domain-specific and occasion-specific exemplar files. |
-| `references/exemplars/*.md` | Concrete weak vs. improved script examples across domains (CS/ML, finance/econ, neuroscience, social science) and occasions (seminar, defense, group meeting, mixed-background). |
+- **`references/exemplars.md`** — Index of domain-specific and occasion-specific exemplar files.
+- **`references/exemplars/*.md`** — Weak vs. improved script examples across domains (CS/ML, finance/econ, neuroscience, social science) and occasions (seminar, defense, group meeting, mixed-background).
 
 ### Optional Extensions
 
-| File | Purpose |
-|------|---------|
-| `references/multi-agent-rehearsal-contract.md` | Contract for the optional `v1A` multi-agent intensification mode. |
-| `references/multi-agent-workflow.md` | Step-by-step workflow for multi-agent rehearsal. |
-| `references/multi-agent-personas.md` | Persona definitions for multi-agent simulation. |
-| `references/overlay-contract.md` | Contract for discipline-specific overlay layers (`v1B`). |
-| `references/overlays/*.md` | Domain-specific calibrations (finance, CS group meeting, defense-heavy). |
-| `references/contradiction-contract.md` | Contract for contradiction detection between slides and supporting materials (`v2A`). |
-| `references/contradiction-taxonomy.md` | Taxonomy of contradiction types. |
-| `references/contradiction-reconciliation-rules.md` | Rules for resolving detected contradictions. |
-| `references/exemplar-contract.md` | Contract governing the exemplar layer (`v3A`). |
-| `references/timing-tool-contract.md` | Contract for the deterministic timing helper (`v4A`). |
-| `references/timing-model.md` | WPM profiles and complexity modifiers for timing estimation. |
-| `references/non-english-support-contract.md` | Scope contract for Chinese academic presentation support (`v5A`). |
+- **`references/multi-agent-rehearsal-contract.md`** — Optional multi-agent intensification mode.
+- **`references/multi-agent-workflow.md`** — Step-by-step multi-agent rehearsal workflow.
+- **`references/multi-agent-personas.md`** — Persona definitions for multi-agent simulation.
+- **`references/overlay-contract.md`** — Discipline-specific overlay layer definitions.
+- **`references/overlays/*.md`** — Domain-specific calibrations (finance, CS group meeting, defense-heavy).
+- **`references/contradiction-contract.md`** — Contradiction detection rules.
+- **`references/contradiction-taxonomy.md`** — Taxonomy of contradiction types.
+- **`references/contradiction-reconciliation-rules.md`** — Rules for resolving contradictions.
+- **`references/exemplar-contract.md`** — Exemplar layer governance.
+- **`references/timing-tool-contract.md`** — Deterministic timing helper configuration.
+- **`references/timing-model.md`** — WPM profiles and complexity modifiers.
+- **`references/non-english-support-contract.md`** — Chinese academic presentation support scope.
 
 ### Scripts & Validation
 
-| File | Purpose |
-|------|---------|
-| `scripts/estimate_timing.py` | Deterministic timing estimator with configurable WPM profiles and complexity modifiers. |
-| `references/capability-matrix.md` | Unified inventory of 29 capabilities across 8 modules. |
-| `references/benchmark-set.md` | 25 benchmark cases with scenario mappings and yield ratings. |
-| `references/distilled-assets-index.md` | Indexed list of all 29 reference files. |
-| `STOP_LINE.md` | Explicit scope boundary and non-goals. |
+- **`scripts/estimate_timing.py`** — Deterministic timing estimator with configurable WPM profiles.
+- **`references/capability-matrix.md`** — Inventory of 29 capabilities across 8 modules.
+- **`references/benchmark-set.md`** — 25 benchmark cases with scenario mappings.
+- **`references/distilled-assets-index.md`** — Indexed list of all reference files.
+- **`STOP_LINE.md`** — Explicit scope boundary and non-goals.
 
 ---
 
 ## Validation
 
-- **25 benchmark cases** mapped across real and synthetic scenarios, including high-yield and low-yield cases, discipline overlays, contradiction detection, timing pressure, and Chinese-language support.
-- **Capability matrix** documenting 29 capabilities across 8 modules, with source version, default status, applicable scenarios, and known boundaries.
-- **Stop line** documenting explicit non-goals to prevent scope creep.
+The project was validated with 25 benchmark cases covering real and synthetic scenarios, including discipline overlays, contradiction detection, timing pressure, and Chinese-language support. A capability matrix documents 29 capabilities across 8 modules, and a stop line records explicit non-goals to prevent scope creep.
 
 Key documents: [Capability Matrix](research-talkcraft/references/capability-matrix.md) | [Benchmark Set](research-talkcraft/references/benchmark-set.md) | [Stop Line](research-talkcraft/STOP_LINE.md)
 
